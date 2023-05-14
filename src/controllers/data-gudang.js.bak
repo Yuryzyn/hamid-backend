@@ -1,0 +1,99 @@
+const { response,request } = require("express");
+const e = require("express");
+const dataGudang = require("../models/data-gudang");
+// const barang = require("./../models/barang");
+// const rusak = require("./../models/barang-rusak")
+
+class Controller {
+
+    static addKaryawan(req, res){
+        
+        let {nama,tlpn,nik,noUser,inf} = req.body
+        karyawan.create({
+            nama,
+            tlpn,
+            nik,
+            noUser,
+            inf,
+        }).then((r)=>{
+            res.status(200).json({
+                message: "Berhasil Mengirim Data karyawan"
+            })
+        }).catch((error)=>{
+            res.status(400).json({
+                message: "Gagal mengirim data karyawan"
+            })
+            console.log(error)
+            console.log("addKaryawan!!!")
+        })
+
+    }
+
+    static findAllKaryawan(req, res){
+
+        let data = req.body
+        karyawan.find ({}).then((response)=>{
+            res.status(200).json({
+                data: response,
+                message: "Berhasil memuat database karyawan"
+            })
+        })
+        .catch((response)=>{
+            res.status(400).json({
+                data: response,
+                message: "Gagal memuat database karyawan"
+            })
+            console.log("findAllUser!!!")
+        })
+    }
+
+    static editKaryawan (req, res){
+        let data = req.body
+
+        karyawan.findOneAndUpdate({
+            _id : data.id
+        },{
+            nama : data.nama,
+            tlpn : data.tlpn,
+            nik  : data.nik,
+            noUser : data.noUser,
+            inf  : data.inf,
+            status :data.status,
+            editBy :data.editBy
+
+        }).then((r)=>{
+            res.status(200).json({
+                message: "Berhasil Edit Data"
+            })
+        }).catch((error)=>{
+            res.status(400).json({
+                message:"Gagal Edit data"
+            })
+            console.log(error)
+            console.log("editData!!!")
+        })
+
+    }
+
+    static deleteKaryawan(req,res){
+        let data=req.body
+
+        karyawan.findOneAndDelete({
+            noUser : data.noUser
+        }).then((r)=>{
+            res.status(200).json({
+                message: "Berhasil menghapus data karyawan!"
+            })
+        }).catch((error)=>{
+            res.status(400).json({
+                message:"Gagal menghapus data karyawan!"
+            })
+            console.log(error)
+            console.log("deletedata!!!")
+        })
+
+    }
+
+}
+
+module.exports = Controller;
