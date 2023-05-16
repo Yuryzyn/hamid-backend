@@ -1,92 +1,93 @@
 const { response,request } = require("express");
 const e = require("express");
-const pembeli = require("./../models/pembeli");
+const barang = require("./../models/barang");
 // const Axios = require("axios");
 // const { default: axios } = require("axios");
 // const { create } = require("./../models/pembeli");
 
-class PembeliController {
+class BarangController {
     
-    static addPembeli(req, res){
+    static addBarang(req, res){
         
-        let {nama,tlpn,nik,alamat,editBy} = req.body
-        pembeli.create({
-            nama,
-            tlpn,
-            nik,
-            alamat,
-            editBy
+        let {namaBarang,tipeBarang,hargaBeli,hargaJual,fotoBarang} = req.body
+        barang.create({
+            namaBarang,
+            tipeBarang,
+            hargaBeli,
+            hargaJual,
+            fotoBarang,
+            
         }).then((r)=>{
             res.status(200).json({
-                message: "Berhasil mengirim data pembeli"
+                message: "Berhasil mengirim data barang"
             })
         }).catch((error)=>{
             res.status(400).json({
-                message: "Gagal mengirim data pembeli"
+                message: "Gagal mengirim data barang"
             })
             console.log(error)
-            console.log("addPembeli!!!")
+            console.log("addBarang!!!")
         })
 
     }
 
-    static findAllPembeli(req, res){
+    static findAllBarang(req, res){
 
-        let data = req.body
-        pembeli.find ({}).then((response)=>{
+        barang.find ({}).then((response)=>{
             res.status(200).json({
                 data : response,
-                message: "Berhasil memuat database pembeli"
+                message: "Berhasil memuat database barang"
             })
         })
         .catch((response)=>{
             res.status(400).json({
                 data: response,
-                message: "Gagal memuat database pembeli"
+                message: "Gagal memuat database barang"
             })
-            console.log("findAllPembeli!!!")
+            console.log(error)
+            console.log("findAllBarang!!!")
         })
     }
 
-    static findPembeli(req, res){
+    static findBarang(req, res){
 
         let _id = req.body
-        pembeli.find ({
+        barang.find ({
             _id
         }).then((response)=>{
             if(response.length!=0){
                 res.status(200).json({
                     data: response,
-                    message: "FindByIdPembeli"
+                    message: "FindByIdBarang"
                 })
-                console.log("FindByIdPembeli>>>")
+                console.log("FindByIdBarang>>>")
             }else{
                 res.json({
                     message:"Data tidak ditemukan"
                 })
-                console.log("FindByIdPembeli???")  
+                console.log("FindByIdBarang???")  
             }
 
         }).catch((response)=>{
             res.status(400).json({
                 message: "Koneksi gagal"
             })
-            console.log("FindByIdPembeli!!!")
+            console.log("FindByIdBarang!!!")
         })
     }
 
-    static editPembeli (req, res){
+    static editBarang (req, res){
         let data = req.body
 
-        pembeli.findOneAndUpdate({
+        barang.findOneAndUpdate({
             _id : data._id
         },{
-            nama : data.nama,
-            tlpn : data.tlpn,
-            nik  : data.nik,
-            alamat : data.alamat,
-            editBy :data.editBy
-
+            namaBarang : data.namaBarang,
+            tipeBarang : data.tipeBarang,
+            hargaBeli : data.hargaBeli,
+            hargaJual : data.hargaJual,
+            fotoBarang : data.fotoBarang,
+            
         }).then((r)=>{
             res.status(200).json({
                 message: "Berhasil edit data pembeli"
@@ -102,4 +103,4 @@ class PembeliController {
     }
 }
 
-module.exports = PembeliController;
+module.exports = BarangController;

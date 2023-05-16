@@ -13,26 +13,27 @@ const barangSchema = new mongoose.Schema({
 
     },
     hargaBeli : {
-        type : String,
+        type : Number,
         required : true,
 
     },
-    HargaJual : {
-        type : String,
-        required : true,
-
-    },
-    idBarang : {
-        type : String,
+    hargaJual : {
+        type : Number,
         required : true,
 
     },
     fotoBarang : {
         type : String,
-        required : true,
+        default : "Tidak Ada Foto!",
 
+    },
+
+},{
+    versionKey : false,
+    timestamps : {
+        createdAt : "create",
+        updatedAt : "update"
     }
-    
 });
 
 const barang = mongoose.model("barang", barangSchema);
