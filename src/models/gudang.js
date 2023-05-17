@@ -14,7 +14,7 @@ const gudangSchema = new mongoose.Schema({
     },
     idRusak : {
         type : String,
-        required : true,
+        default : "",
 
     },
     jumlahRusak : {

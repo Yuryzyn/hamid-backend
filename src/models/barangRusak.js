@@ -6,23 +6,33 @@ const barangRusakSchema = new mongoose.Schema({
         type : String,
         required : true,
 
-    },
-    idRusak : {
-        type : String,
-        required : true,
-
     },  
     keterangan : {
         type : String,
         required : true,
 
     },
-    status : {
+    buktiFoto : {
         type : String,
+        default : "Tidak ada bukti foto!",
+
+    },
+    jumlah : {
+        type : Number,
         required : true,
+    },
+    status : {
+        type : Boolean,
+        default : false,
 
     },
     
+},{
+    versionKey : false,
+    timestamps : {
+        createdAt : "create",
+        updatedAt : "update"
+    }
 });
 
 const barangRusak = mongoose.model("barangRusak", barangRusakSchema);
