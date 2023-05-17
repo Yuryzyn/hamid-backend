@@ -8,14 +8,18 @@ const gudangSchema = new mongoose.Schema({
 
     },
     jumlahBarang : {
-        type : String,
-        required : true,
+        type : Number,
+        default : 0,
 
     },
     idRusak : {
         type : String,
         required : true,
 
+    },
+    jumlahRusak : {
+        type : Number,
+        Default : 0,
     }
     
 });

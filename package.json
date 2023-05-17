@@ -1,7 +1,6 @@
 {
   "name": "hamid-backend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,11 +10,23 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "cors": "^2.8.5",
+    "dnode": "^1.2.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongodb": "^5.4.0",
     "mongoose": "^7.0.1",
-    "nodemon": "^2.0.22"
-  }
+    "nodemon": "^2.0.22",
+    "request": "^2.88.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yuryzyn/hamid-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Yuryzyn/hamid-backend/issues"
+  },
+  "homepage": "https://github.com/Yuryzyn/hamid-backend#readme",
+  "description": ""
 }

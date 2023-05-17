@@ -7,21 +7,11 @@ const barangRusakSchema = new mongoose.Schema({
         required : true,
 
     },
-    fotoBarang : {
-        type : String,
-        required : true,
-
-    }, 
     idRusak : {
         type : String,
         required : true,
 
-    }, 
-    jumlahRusak : {
-        type : String,
-        required : true,
-
-    }, 
+    },  
     keterangan : {
         type : String,
         required : true,
