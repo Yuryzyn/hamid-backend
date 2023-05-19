@@ -1,25 +1,27 @@
 const mongoose = require("mongoose");
 
-const gudangSchema = new mongoose.Schema({
+const LoginSchema = new mongoose.Schema({
 
-    idBarang : {
+    username : {
         type : String,
         required : true,
 
     },
-    jumlahBarang : {
+    password : {
         type : String,
         required : true,
 
     },
-    idRusak : {
+    idKaryawan : {
         type : String,
         required : true,
 
     }
-    
+
+},{
+    versionKey : false,
 });
 
-const gudang = mongoose.model("gudang", gudangSchema);
+const login = mongoose.model("login", LoginSchema);
 
-module.exports = gudang;
+module.exports = login;

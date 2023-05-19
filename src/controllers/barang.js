@@ -90,14 +90,14 @@ class BarangController {
             
         }).then((r)=>{
             res.status(200).json({
-                message: "Berhasil edit data pembeli"
+                message: "Berhasil edit data barang"
             })
         }).catch((error)=>{
             res.status(400).json({
-                message:"Gagal edit data pembeli"
+                message:"Gagal edit data barang"
             })
             console.log(error)
-            console.log("editDataPembeli!!!")
+            console.log("editDatabarang!!!")
         })
 
     }
