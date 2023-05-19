@@ -37,4 +37,7 @@ const barangRusakSchema = new mongoose.Schema({
 
 const barangRusak = mongoose.model("retur", barangRusakSchema);
 
+// const barangRusak = mongoose.model("barangRusak", barangRusakSchema);
+
+
 module.exports = barangRusak;
