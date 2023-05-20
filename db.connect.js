@@ -15,6 +15,8 @@ const dbConnect = () => {
    mongoose.connect(mongoURI, {
      useNewUrlParser: true,
      useUnifiedTopology: true,
+     // useFindAndModify: false,
+     // useCreateIndex: true,
      connectTimeoutMS: 15000,
    });
    let db = mongoose.connection;

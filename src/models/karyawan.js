@@ -17,19 +17,14 @@ const KaryawanSchema = new mongoose.Schema({
         required : true,
 
     },
-    noUser : {
-        type : String,
-        required : true,
-
-    },
-    inf : {
+    alamat : {
         type : String,
         required : true,
 
     },
     status : {
         type : String,
-        default : "aktif",
+        default : "Aktif",
 
     },
     editBy : {

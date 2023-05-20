@@ -1,116 +1,138 @@
 const { response, request } = require("express")
-const e = require("express")
-const { isObjectIdOrHexString } = require("mongoose");
-const bcrypt = require("bcryptjs");
+const Axios = require("axios");
+const mongoose = require("mongoose");
+const { generateTokenWOExp, generateTokenWithExp } = require("../helpers/token");
+const { checkPass } = require("../helpers/hash");
+const { hashPass } = require("../helpers/hash");
+const ObjectId = mongoose.Types.ObjectId;
 const Login = require("./../models/login");
-//const bcrypt = require("mongoose-Bcrypt");
-const saltRounds = 10
+const login = require("./../models/login");
+// const { isObjectIdOrHexString } = require("mongoose");
+// const bcrypt = require("bcryptjs");
+
 
 class Controller{
     
-    static register(req, res){
- 
-        let {idPegawai,username,password} = req.body
+    static register(req, res, next){
+        let {idKaryawan,username,password,role} = req.body
 
-        bcrypt.genSalt(saltRounds, function (saltErr, salt){
-            if(saltErr){
-                throw saltErr
-            } else {
-                bcrypt.hash(password, salt, function(hashErr, hash){
-                    if (hashErr){
-                        throw hashErr
-                    } else {
-                        console.log(hash)
-                        Login.create({
-                            idPegawai,
-                            username,
-                            password : hash
-                        }).then((response)=>{
-                            res.status(200).json({
-                                message: "Berhasil masuk, selamat datang " + username +" !!"
-                            })
-                            console.log("signIn>>>")
-                        })
-                        .catch((response)=>{
-                            res.status(400).json({
-                                message:"Gagal membuat akun baru"
-                            })
-                            console.log("signIn!!!")
-                        })
-                        
-                    }
-                })
-            }
-        })
-        
+        Login.create({
+            idKaryawan,
+            password,
+            username,
+            role,
+
+        }).then((response) => {
+        res.status(200).json({ message: "Username berhasil didaftarkan" });
+      }).catch(next);
     }
 
-    static usrLogin(req,res){
+    static LoginKaryawan(req, res, next){
         
         let {username,password} = req.body
         
-        Login.findOne({
-            username
-        }).then((response)=>{
-            console.log("hash     : "+ response.password)
-            let check = bcrypt.compareSync(password, response.password) 
-            console.log("status   : "+ check)
-            if(check){
-                res.status(200).json({
-                    message:"Berhasil Masuk"
-                })
-            }else{
-                res.status(400).json({
-                    message:"Password Salah!"
-                })
-            }
+        login.findOne({ username })
+            .then(async (response) => {
+                if (!response) {
+                    throw { status: 400, message: "Maaf akun anda tidak terdaftar!" };
+                } else {
+                    if (response && checkPass(password, response.password)) {
+                    try {
+                        let token = {
+                            username: response.username,
+                            role: response.role,
+                        };
+                        let tokenHashed = await generateTokenWithExp(token);
+                        res.status(200).json({
+                            username: response.username,
+                            role: response.role,
+                            token: tokenHashed,
+                        });
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    } else {
+                        throw { status: 400, message: "Email atau Password anda salah!" };
+                    }
+                }
 
-        }).catch((response)=>{
-            console.log(response)
-            res.status(400).json({
-                message:"Gagal koneksi"
-            })
-        })
+      })
+      .catch(next);
+    }
+
+    static findAkun(req, res, next){
+        let { idKaryawan } = req.body;
+
+        login.findOne({
+            idKaryawan
+        }).then((response) => {
+            res.status(200).json({ data: response });
+        }).catch(next);
 
     }
 
-    static resetUsernamePassword(req,res){
+    static resetUsernamePassword(req,res,next){
 
-        let {idPegawai,username,password} = req.body
+        let {idKaryawan,username,password} = req.body
+        let newPass = hashPass(password);
 
-        bcrypt.genSalt(saltRounds, function (saltErr, salt){
-            if(saltErr){
-                throw saltErr
+        login.findOneAndUpdate({
+            idKaryawan
+        },{
+            username,
+            password: newPass,
+
+        }).then((response) => {
+            res.status(200).json({ message: "Password berhasil diubah" });
+        }).catch(next);
+
+    }
+
+    static refreshLogin(req, res, next) {
+        login.findOne({ username: req.decoded.username })
+          .then(async (response) => {
+            if (response) {
+              try {
+                let token = {
+                  username: response.username,
+                  role: response.role,
+                };
+                let tokenHashed = await generateTokenWithExp(token);
+                res.status(200).json({
+                  nama: response.nama,
+                  role: response.role,
+                  token: tokenHashed,
+                });
+              } catch (err) {
+                console.log(err);
+              }
             } else {
-                bcrypt.hash(password, salt, function(hashErr, hash){
-                    if (hashErr){
-                        throw hashErr
-                    } else {
-                        console.log(hash)
-                        Login.findOneAndUpdate({
-                            idPegawai
-                        },{
-                            username : username,
-                            password : password,
-                            
-                        }).then((response)=>{
-                            res.status(200).json({
-                                message: "Berhasil mengupdate, selamat datang " + username +" !!"
-                            })
-                            console.log("resetUsrPswd>>>")
-                        })
-                        .catch((response)=>{
-                            res.status(400).json({
-                                message:"Gagal update akun"
-                            })
-                            console.log("resetUsrPswd")
-                        })
-                        
-                    }
-                })
+              throw { status: 403, message: "Token bermasalah" };
             }
-        })
+          })
+          .catch(next);
+      }
 
+    static deleteAkun(req, res, next) {
+        let { _id, role } = req.body;
+        
+        if (role == "") {
+            throw {
+              message: "Role ini tidak dapat di hapus!",
+            };
+        } else {
+            UserWarmindo.findOne({ _id })
+                .then((response) => {
+                    return UserWarmindo.deleteOne({ _id: ObjectId(_id) });
+                })
+                .then((response) => {
+                    res.status(200).json({
+                    status: 200,
+                    message: "Akun berhasil di hapus!",
+                });
+              })
+              .catch(next);
+        }
     }
 }
 
