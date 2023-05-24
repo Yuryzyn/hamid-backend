@@ -1,15 +1,13 @@
-const { response,request } = require("express");
-const e = require("express");
+const mongoose = require("mongoose");
 const pembeli = require("./../models/pembeli");
-// const Axios = require("axios");
-// const { default: axios } = require("axios");
-// const { create } = require("./../models/pembeli");
+const ObjectId = mongoose.Types.ObjectId;
+const Axios = require("axios");
 
 class PembeliController {
     
-    static addPembeli(req, res){
-        
+    static addPembeli(req, res, next){
         let {nama,tlpn,nik,alamat,editBy} = req.body
+
         pembeli.create({
             nama,
             tlpn,
@@ -20,35 +18,21 @@ class PembeliController {
             res.status(200).json({
                 message: "Berhasil mengirim data pembeli"
             })
-        }).catch((error)=>{
-            res.status(400).json({
-                message: "Gagal mengirim data pembeli"
-            })
-            console.log(error)
-            console.log("addPembeli!!!")
-        })
+        }).catch(next)
 
     }
 
-    static findAllPembeli(req, res){
+    static findAllPembeli(req, res, next){
 
-        let data = req.body
         pembeli.find ({}).then((response)=>{
             res.status(200).json({
                 data : response,
                 message: "Berhasil memuat database pembeli"
             })
-        })
-        .catch((response)=>{
-            res.status(400).json({
-                data: response,
-                message: "Gagal memuat database pembeli"
-            })
-            console.log("findAllPembeli!!!")
-        })
+        }).catch(next)
     }
 
-    static findPembeli(req, res){
+    static findPembeli(req, res, next){
 
         let _id = req.body
         pembeli.find ({
@@ -61,21 +45,16 @@ class PembeliController {
                 })
                 console.log("FindByIdPembeli>>>")
             }else{
-                res.json({
-                    message:"Data tidak ditemukan"
-                })
-                console.log("FindByIdPembeli???")  
+                throw { 
+                    status: 400, 
+                    message: "Data pembeli tidak ditemukan!"
+                }
             }
 
-        }).catch((response)=>{
-            res.status(400).json({
-                message: "Koneksi gagal"
-            })
-            console.log("FindByIdPembeli!!!")
-        })
+        }).catch(next)
     }
 
-    static editPembeli (req, res){
+    static editPembeli (req, res, next){
         let data = req.body
 
         pembeli.findOneAndUpdate({
@@ -85,19 +64,13 @@ class PembeliController {
             tlpn : data.tlpn,
             nik  : data.nik,
             alamat : data.alamat,
-            editBy :data.editBy
+            editBy : data.editBy,
 
         }).then((r)=>{
             res.status(200).json({
                 message: "Berhasil edit data pembeli"
             })
-        }).catch((error)=>{
-            res.status(400).json({
-                message:"Gagal edit data pembeli"
-            })
-            console.log(error)
-            console.log("editDataPembeli!!!")
-        })
+        }).catch(next)
 
     }
 }

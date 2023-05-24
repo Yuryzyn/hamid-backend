@@ -4,22 +4,22 @@ const PembeliSchema = new mongoose.Schema({
 
     nama : {
         type : String,
-        required : true,
+        require : [true,"Nama pembeli harus di isi!"],
 
     },
     tlpn : {
         type : String,
-        required : true,
+        require : [true,"Nomor telpon pembeli harus di isi!"],
 
     },
     nik : {
         type : String,
-        required : true,
+        require : [true,"NIK pembeli harus di isi!"],
 
     },
     alamat : {
         type : String,
-        required : true,
+        require : [true,"Alamat harus di isi!"],
 
     },
     editBy : {

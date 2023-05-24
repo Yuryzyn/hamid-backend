@@ -1,51 +1,43 @@
-const { response,request } = require("express");
-const e = require("express");
+const mongoose = require("mongoose");
 const stock = require("./../models/gudang");
-// const Axios = require("axios");
-// const { default: axios } = require("axios");
-// const { create } = require("./../models/pembeli");
+const ObjectId = mongoose.Types.ObjectId;
+const Axios = require("axios");
+const { response } = require("express");
 
 class GudangController {
     
-    static addGudang(req, res){
-        
-        let {idBarang,jumlahBarang,idRusak,jumlahRusak} = req.body
-        stock.create({
-            idBarang,
-            jumlahBarang,
-            idRusak,
-            jumlahRusak,
+    static addGudang(req, res, next){
+        let data = req.body
 
-        }).then((r)=>{
+        stock.find({idBarang : data.idBarang})
+        .then((response) => {
+            if (response.length === 0){
+                return stock.create({
+                    idBarang : data.idBarang,
+                    jumlahBarang : data.jumlahBarang,
+                })
+            } else {
+                return stock.updateOne({idBarang : data.idBarang},{
+                    $inc:{jumlahBarang: +data.jumlahBarang}
+                })
+            }
+        }).then((r) => {
             res.status(200).json({
-                message: "Berhasil mengirim data stok gudang"
+                message: "Berhasil update database stok gudang"
             })
-        }).catch((error)=>{
-            res.status(400).json({
-                message: "Gagal mengirim data stok gudang"
-            })
-            console.log(error)
-            console.log("addGudang!!!")
-        })
+        }).catch(next)
 
     }
 
-    static findAllStockGudang(req, res){
+    static findAllStockGudang(req, res, next){
 
-        stock.find ({}).then((response)=>{
+        stock.find({}).then((response)=>{
             res.status(200).json({
                 data : response,
                 message: "Berhasil memuat database stok gudang"
             })
         })
-        .catch((response)=>{
-            res.status(400).json({
-                data: response,
-                message: "Gagal memuat database stok gudang"
-            })
-            console.log(error)
-            console.log("findStockGudang!!!")
-        })
+        .catch(next)
     }
 
     // static findBarang(req, res){
@@ -75,28 +67,34 @@ class GudangController {
     //     })
     // }
 
-    static editStockGudang (req, res){
-        let data = req.body
+    static editStockGudang (req, res, next){
+        let {idBarang, jumlahBarang, jumlahRusak } = req.body
 
         stock.findOneAndUpdate({
-            _id : data._id
+            idBarang
         },{
-            idBarang : data.idBarang,
-            jumlahBarang : data.jumlahBarang,
-            idRusak : data.idRusak,
-            jumlahRusak : data.jumlahRusak,
+            jumlahBarang,
             
         }).then((r)=>{
             res.status(200).json({
-                message: "Berhasil edit data stok gudang"
+                message: "Berhasil edit data stok barang"
             })
-        }).catch((error)=>{
-            res.status(400).json({
-                message:"Gagal edit data stok gudang"
+        }).catch(next)
+    }
+
+    static editStockRusak (req, res, next){
+        let {idBarang, jumlahBarang, jumlahRusak } = req.body
+
+        stock.findOneAndUpdate({
+            idBarang
+        },{
+            jumlahRusak,
+            
+        }).then((r)=>{
+            res.status(200).json({
+                message: "Berhasil edit data stok barang rusak"
             })
-            console.log(error)
-            console.log("editStockGudang!!!")
-        })
+        }).catch(next)
 
     }
 }

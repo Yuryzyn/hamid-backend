@@ -1,33 +1,38 @@
-const { response,request } = require("express");
-const e = require("express");
+const mongoose = require("mongoose");
 const retur = require("./../models/barangRusak");
+const ObjectId = mongoose.Types.ObjectId;
+const Axios = require("axios");
+const { response } = require("express");
+// const { editStockGudang } = require("./gudang");
+const gudang = require("../models/gudang");
 
 class barangRusakController {
 
-    static addBarangRusak(req, res){
+    static addBarangRusak(req, res, next){
         
-        let {idBarang, keterangan,buktiFoto,jumlah} = req.body
+        let {idBarang, keteranganRusak,jumlahRusak} = req.body
         retur.create({
             idBarang,
-            keterangan,
-            buktiFoto,
-            jumlah,
+            keteranganRusak,
+            jumlahRusak,
             
-        }).then((r)=>{
-            res.status(200).json({
-                message: "Berhasil mengirim data barang retur"
-            })
-        }).catch((error)=>{
-            res.status(400).json({
-                message: "Gagal mengirim data barang retur"
-            })
-            console.log(error)
-            console.log("addBarangRusak!!!")
-        })
+        }).then((res)=>{
+            if (idBarang = ""){
+                throw res.status(403).json({
+                    message : "lohe?"
+                })
+            } else {
+                gudang.findOneAndUpdate({idBarang},{jumlahRusak})
+            }
+        // }).then((r)=>{
+        //     res.status(200).json({
+        //         message: "Berhasil mengirim data barang retur"
+        //     })
+        }).catch(next)
 
     }
 
-    static findAllBarangRusak(req, res){
+    static findAllBarangRusak(req, res, next){
 
         retur.find ({}).then((response)=>{
             res.status(200).json({
@@ -35,40 +40,38 @@ class barangRusakController {
                 message: "Berhasil memuat database barang retur"
             })
         })
-        .catch((response)=>{
-            res.status(400).json({
-                data: response,
-                message: "Gagal memuat database barang retur"
-            })
-            console.log(error)
-            console.log("findStockBarangRusak!!!")
-        })
+        .catch(next)
     }
 
-    static editBarangRusak (req, res){
+    static editBarangRusak (req, res, next){
         let data = req.body
 
         retur.findOneAndUpdate({
             _id : data._id
         },{
-            idBarang : data.idBarang,
-            keterangan : data.keterangan,
-            buktiFoto : data.buktiFoto,
-            jumlah : data.jumlah,
-            status : data.status,
+            keteranganRusak : data.keteranganRusak,
+            jumlahRusak : data.jumlahRusak,
             
         }).then((r)=>{
             res.status(200).json({
                 message: "Berhasil edit data retur"
             })
-        }).catch((error)=>{
-            res.status(400).json({
-                message:"Gagal edit data retur"
-            })
-            console.log(error)
-            console.log("editBarangRusak!!!")
-        })
+        }).catch(next)
 
+    }
+
+    static checkRetur (req, res, next){
+        let {_id, statusRetur} = req.body
+
+        retur.findByIdAndUpdate({
+            _id
+        },{
+            statusRetur
+        }).then((r)=>{
+            res.status(200).json({
+                message: "Barang sudah di Retur"
+            })
+        }).catch(next)
     }
 
 }

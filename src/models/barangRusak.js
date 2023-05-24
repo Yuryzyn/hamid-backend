@@ -4,26 +4,22 @@ const barangRusakSchema = new mongoose.Schema({
 
     idBarang : {
         type : String,
-        required : true,
+        require : [true,"ID Barang yang di retur harus di isi!"],
 
     },  
-    keterangan : {
+    keteranganRusak : {
         type : String,
-        required : true,
+        require : [true,"Keterangan retur harus di isi!"],
 
     },
-    buktiFoto : {
-        type : String,
-        default : "Tidak ada bukti foto!",
-
-    },
-    jumlah : {
+    jumlahRusak : {
         type : Number,
-        required : true,
+        require : [true,"Jumlah barang retur harus di isi!"],
+        
     },
-    status : {
-        type : Boolean,
-        default : false,
+    statusRetur : {
+        type : String,
+        default : "belum retur",
 
     },
     

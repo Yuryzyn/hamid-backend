@@ -2,24 +2,24 @@ const mongoose = require("mongoose");
 
 const barangSchema = new mongoose.Schema({
 
-    namaBarang : {
+    jenis : {
         type : String,
-        required : true,
+        require : [true,"Jenis barang harus di isi!"],
 
     },
-    tipeBarang : {
+    merk : {
         type : String,
-        required : true,
+        require : [true,"Merk harus di isi!"],
 
     },
     hargaBeli : {
         type : Number,
-        required : true,
+        require : [true,"Harga beli harus di isi!"],
 
     },
     hargaJual : {
         type : Number,
-        required : true,
+        require : [true,"Harga jual harus di isi!"],
 
     },
     fotoBarang : {
@@ -27,13 +27,10 @@ const barangSchema = new mongoose.Schema({
         default : "Tidak Ada Foto!",
 
     },
+    
 
 },{
-    versionKey : false,
-    timestamps : {
-        createdAt : "create",
-        updatedAt : "update"
-    }
+    versionKey : false
 });
 
 const barang = mongoose.model("barang", barangSchema);

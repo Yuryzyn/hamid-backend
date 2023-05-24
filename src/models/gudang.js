@@ -1,10 +1,11 @@
+const { timeStamp } = require("console");
 const mongoose = require("mongoose");
 
 const gudangSchema = new mongoose.Schema({
 
     idBarang : {
         type : String,
-        required : true,
+        require : [true,"ID Barang harus di isi!"],
 
     },
     jumlahBarang : {
@@ -12,16 +13,18 @@ const gudangSchema = new mongoose.Schema({
         default : 0,
 
     },
-    idRusak : {
-        type : String,
-        default : "",
-
-    },
     jumlahRusak : {
         type : Number,
         Default : 0,
+
     }
     
+},{
+    versionKey : false,
+    timestamps : {
+        createdAt : "create",
+        updatedAt : "update"
+    }
 });
 
 const gudang = mongoose.model("gudang", gudangSchema);
