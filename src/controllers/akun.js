@@ -3,7 +3,6 @@ const Axios = require("axios");
 const mongoose = require("mongoose");
 const { generateTokenWOExp, generateTokenWithExp } = require("../helpers/token");
 const { checkPass, hashPass } = require("../helpers/hash");
-// const { hashPass } = require("../helpers/hash");
 const ObjectId = mongoose.Types.ObjectId;
 const akun = require("../models/akun");
 

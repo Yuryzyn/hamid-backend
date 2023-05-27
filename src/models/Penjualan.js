@@ -2,54 +2,56 @@ const mongoose = require("mongoose");
 
 const PenjualanSchema = new mongoose.Schema({
 
-    noPenjualan : {
+    noNota : {
         type : String,
-        required : true,
+        require : [true,"nomor nota harus di isi!"],
 
     },
-    noUser : {
+    idKaryawan : {
         type : String,
-        required : true,
+        require : [true,"id karyawan harus di isi!"],
 
     },
-    namaPembeli : {
+    idPembeli : {
         type : String,
-        required : true,
+        require : [true,"id pembeli harus di isi!"],
 
     },
-    namaBarang : {
+    idBarang : {
         type : String,
-        required : true,
+        require : [true,"id barang harus di isi!"],
 
     },
-    jumlahBarang : {
-        type : Int16Array,
-        required : true,
-        default : 0,
-
-    },
-    hargaTotal : {
-        type : Int16Array,
-        require : true,
-        default : 0,
+    jumlahBeli : {
+        type : Number,
+        require : [true,"jumlah beli harus di isi!"],
 
     },
     alamatKirim : {
         type : String,
-        require : true,
+        require : [true,"alamat kirim harus di isi!"],
 
     },
-    tglpesan : {
+    nomorSuratJalan : {
         type : String,
-        require : true,
+        default : "belum ada surat jalan",
+    },
+    hargaTotal : {
+        type : Number,
+        default : 0,
 
     },
     tglKirim : {
         type : Date,
-        require : true,
+        default : Date.now,
 
     },
-    editBy : {
+    statusKirim : {
+        type : String,
+        default : "on-process"
+        // {"on-process", "deliver", "finished", "canceled"}
+    },
+    handleBy : {
         type : String,
         default : "",
 
@@ -63,6 +65,6 @@ const PenjualanSchema = new mongoose.Schema({
     }
 });
 
-const penjualan = mongoose.model("penjualan", PenjualanSchema);
+const Jual = mongoose.model("penjualan", PenjualanSchema);
 
-module.exports = penjualan;
+module.exports = Jual;

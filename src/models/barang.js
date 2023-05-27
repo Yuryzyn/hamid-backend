@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const barangSchema = new mongoose.Schema({
+const BarangSchema = new mongoose.Schema({
 
     jenis : {
         type : String,
@@ -33,6 +33,6 @@ const barangSchema = new mongoose.Schema({
     versionKey : false
 });
 
-const barang = mongoose.model("barang", barangSchema);
+const barang = mongoose.model("barang", BarangSchema);
 
 module.exports = barang;

@@ -1,23 +1,26 @@
 const mongoose = require("mongoose");
-const stock = require("./../models/gudang");
+const gudang = require("./../models/gudang");
 const ObjectId = mongoose.Types.ObjectId;
 const Axios = require("axios");
 const { response } = require("express");
+const barang = require("../models/barang");
+const { create } = require("../models/Penjualan");
+const { promises } = require("dns");
 
 class GudangController {
     
-    static addGudang(req, res, next){
+    static addStockGudang (req, res, next) {
         let data = req.body
 
-        stock.find({idBarang : data.idBarang})
+        gudang.find({idBarang : data.idBarang})
         .then((response) => {
             if (response.length === 0){
-                return stock.create({
+                return gudang.create({
                     idBarang : data.idBarang,
                     jumlahBarang : data.jumlahBarang,
                 })
             } else {
-                return stock.updateOne({idBarang : data.idBarang},{
+                return gudang.updateOne({idBarang : data.idBarang},{
                     $inc:{jumlahBarang: +data.jumlahBarang}
                 })
             }
@@ -31,10 +34,30 @@ class GudangController {
 
     static findAllStockGudang(req, res, next){
 
-        stock.find({}).then((response)=>{
+        gudang.find({
+        }).then((response)=>{
+            let final = response.map((data)=>{
+                return barang.findById({
+                    _id : data.idBarang
+                }).then((response2)=>{
+                    const barangFinal = response2
+                    
+                    return {
+                        _id : data._id,
+                        Barang : barangFinal,
+                        jumlahBarang : data.jumlahBarang,
+                        jumlahRusak : data.jumlahRusak,
+                        handleBy : data.handleBy,
+                        create : data.create,
+                        update : data.update
+                    }
+                })
+            })
+            return Promise.all(final);
+        }).then((response)=>{
             res.status(200).json({
                 data : response,
-                message: "Berhasil memuat database stok gudang"
+                message: "Berhasil memuat semua data gudang"
             })
         })
         .catch(next)
@@ -70,7 +93,7 @@ class GudangController {
     static editStockGudang (req, res, next){
         let {idBarang, jumlahBarang, jumlahRusak } = req.body
 
-        stock.findOneAndUpdate({
+        gudang.findOneAndUpdate({
             idBarang
         },{
             jumlahBarang,
@@ -85,7 +108,7 @@ class GudangController {
     static editStockRusak (req, res, next){
         let {idBarang, jumlahBarang, jumlahRusak } = req.body
 
-        stock.findOneAndUpdate({
+        gudang.findOneAndUpdate({
             idBarang
         },{
             jumlahRusak,

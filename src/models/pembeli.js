@@ -22,7 +22,7 @@ const PembeliSchema = new mongoose.Schema({
         require : [true,"Alamat harus di isi!"],
 
     },
-    editBy : {
+    handleBy : {
         type : String,
         default : "",
 
