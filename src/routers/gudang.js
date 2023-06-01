@@ -1,4 +1,6 @@
 const Router = require("express").Router();
+const { upload } = require("../middlewares/photo");
+// Router.use(jwtAuthenticate);
 
 const gudang = require("./../controllers/gudang");
 Router.post("/add-stock", gudang.addStockGudang);
@@ -12,7 +14,7 @@ Router.post("/edit-retur", retur.editBarangRusak);
 Router.post("/done-retur", retur.checkRetur);
 
 const barang = require("./../controllers/barang");
-Router.post("/add-item", barang.addBarang);
+Router.post("/add-item",upload.single("fotoBarang"), barang.addBarang);
 Router.get("/all-item", barang.findAllBarang);
 Router.post("/edit-item", barang.editBarang);
 

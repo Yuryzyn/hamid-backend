@@ -24,7 +24,12 @@ const BarangSchema = new mongoose.Schema({
     },
     fotoBarang : {
         type : String,
-        default : "Tidak Ada Foto!",
+        default : "tidak ada foto",
+
+    },
+    handleBy : {
+        type : String,
+        default : "",
 
     },
     

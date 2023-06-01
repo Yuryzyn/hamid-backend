@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const jual = require("../models/penjualan");
+const jual = require("../models/Penjualan");
 const ObjectId = mongoose.Types.ObjectId;
 const Axios = require("axios");
 const { response } = require("express");

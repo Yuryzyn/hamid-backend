@@ -8,17 +8,18 @@ const { response } = require("express");
 class BarangController {
     
     static addBarang(req, res, next){
-        let data = req.body
+        let {jenis, merk, hargaBeli, hargaJual, handleBy}= req.body
         
-        barang.find({jenis : data.jenis, merk : data.merk})
+        barang.find({jenis, merk})
         .then((response)=>{
             if(response.length === 0){
                 barang.create({
-                    jenis : data.jenis,
-                    merk : data.merk,
-                    hargaBeli : data.hargaBeli,
-                    hargaJual : data.hargaJual,
-                    fotoBarang : data.fotoBarang,
+                    jenis,
+                    merk,
+                    hargaBeli,
+                    hargaJual,
+                    fotoBarang : req.body.foto,
+                    handleBy,
                 }).then((r)=>{
                     res.status(200).json({
                         message: "Berhasil mengirim data barang",

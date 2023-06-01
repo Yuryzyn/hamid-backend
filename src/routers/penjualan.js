@@ -1,5 +1,5 @@
 const Router = require("express").Router();
-const jual = require("../controllers/penjualan");
+const jual = require("../controllers/Penjualan");
 
 Router.post("/add", jual.addPenjualan);
 Router.get("/all", jual.allPenjualan);

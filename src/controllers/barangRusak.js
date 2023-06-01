@@ -8,7 +8,7 @@ const stock = require("../models/gudang");
 class BarangRusakController {
 
     static addBarangRusak(req, res, next){
-        let {idBarang, keteranganRusak,jumlahRusak} = req.body
+        let {idBarang, keteranganRusak,jumlahRusak,handleBy} = req.body
         
         stock.findOne({
             idBarang
@@ -22,7 +22,7 @@ class BarangRusakController {
                     idBarang,
                     keteranganRusak,
                     jumlahRusak,
-                    
+                    handleBy,
                 })
             }
         }).then((response)=>{
@@ -34,6 +34,7 @@ class BarangRusakController {
                         jumlahBarang : -data.jumlahRusak,
                         jumlahRusak : +data.jumlahRusak,
                     },
+                    handleBy,
                 })
             })
             return Promise.all(nextStep);
@@ -64,6 +65,7 @@ class BarangRusakController {
         },{
             keteranganRusak : data.keteranganRusak,
             jumlahRusak : data.jumlahRusak,
+            handleBy : data.handleBy,
             
         }).then((r)=>{
             res.status(200).json({

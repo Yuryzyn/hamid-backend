@@ -9,38 +9,52 @@ const barang = require("../models/barang");
 class barangMasukController {
 
     static addBarangMasuk(req, res, next){
-        let {idBarang, keterangan, jumlahMasuk, tanggalTerima, nomorSuratJalan, totalHargaBeli} = req.body
+        let data = req.body
 
-        barang.findOne({
-            _id : idBarang
+        gudang.find({
+            idBarang : data.idBarang
         }).then((response1)=>{
             if (response1 === 0){
-                throw {
-                    satus : 400,
-                    Message : "Tidak ada data, tambahkan jenis barang baru!",
-                }
-            } else {
-                masuk.create({
-                    idBarang,
-                    keterangan,
-                    jumlahMasuk,
-                    totalHargaBeli,
-                    tanggalTerima,
-                    nomorSuratJalan,
-                })
-            }
-        }).then((response)=>{
-            if(response.hargaBeli === 0){
-                let calculateTotal = response.map((newData)=>{
-                    return barang.findById({
-                        _id : newData.idBarang
-                    }).then((barang)=>{
-                        const totalHarga = barang.hargaBeli * newData.jumlahMasuk;
-                        return masuk.updateOne({_id : newData._id},{hargaTotal : totalHarga})
+                return gudang.create({
+                    idBarang: data.idBarang,
+                    jumlahBarang : 0,
+                    jumlahRusak : 0,
+                    handleBy : data.handleBy,
+                }).then((reNew)=>{
+                    return masuk.create({
+                        idBarang : data.idBarang,
+                        keterangan : data.keterangan,
+                        jumlahMasuk : data.jumlahMasuk,
+                        totalHargaBeli : data.totalHargaBeli,
+                        tanggalTerima : data.tanggalTerima,
+                        nomorSuratJalan : data.nomorSuratJalan,
+                        handleBy : data.handleBy,
                     })
                 })
-                return Promise.all(calculateTotal);
+            } else {
+                return masuk.create({
+                    idBarang : data.idBarang,
+                    keterangan : data.keterangan,
+                    jumlahMasuk : data.jumlahMasuk,
+                    totalHargaBeli : data.totalHargaBeli,
+                    tanggalTerima : data.tanggalTerima,
+                    nomorSuratJalan : data.nomorSuratJalan,
+                    handleBy : data.handleBy,
+                })
             }
+        // }).then((response3)=>{
+        //     const objekId = response3._id
+        //     const Barangasuk = response3.jumlahMasuk
+        //     const iditem = response3.idBarang
+        //     if(response3.totalHargaBeli = 0){
+        //         barang.findById({
+        //             _id : response3.idBarang
+        //         }).then((tool)=>{
+        //             const totalHarga = tool.hargaBeli;
+        //             console.log(tool)
+        //             return masuk.findByIdAndUpdate({_id : objekId},{$inc : {totalHargaBeli : totalHarga * Barangasuk}})
+        //         })
+        //     }
         }).then((r)=>{
             res.status(200).json({
                 Message : "Berhasil menambah data barang masuk!"
@@ -50,7 +64,7 @@ class barangMasukController {
     }
 
     static editDataBarangMasuk(req, res, next){
-        let {_id, idBarang, keterangan, jumlahMasuk, tanggalTerima, nomorSuratJalan } = req.body
+        let {_id, idBarang, keterangan, jumlahMasuk, tanggalTerima, nomorSuratJalan,handleBy } = req.body
 
         masuk.findByIdAndUpdate({
             _id : _id
@@ -60,6 +74,7 @@ class barangMasukController {
             jumlahMasuk, 
             tanggalTerima, 
             nomorSuratJalan,
+            handleBy,
         }
         ).then((response)=>{
             res.status(200).json({

@@ -18,8 +18,8 @@ Router.patch(
     akun.editKaryawan,
     );
 Router.get(
-    "/karyawan",
-    jwtAuthenticate, 
+    "/all-karyawan",
+    // jwtAuthenticate, 
     akun.findAllKaryawan,
     );
 Router.patch(
