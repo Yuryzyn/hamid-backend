@@ -43,28 +43,6 @@ class BarangController {
         .catch(next)
     }
 
-    // static findBarang(req, res, next){
-
-    //     let _id = req.body
-    //     barang.find ({
-    //         _id
-    //     }).then((response)=>{
-    //         if(response.length!=0){
-    //             res.status(200).json({
-    //                 data: response,
-    //                 message: "FindByIdBarang"
-    //             })
-    //             console.log("FindByIdBarang>>>")
-    //         }else{
-    //             res.json({
-    //                 message:"Data tidak ditemukan"
-    //             })
-    //             console.log("FindByIdBarang???")  
-    //         }
-
-    //     }).catch(next)
-    // }
-
     static editBarang (req, res, next){
         let data = req.body
 
@@ -75,7 +53,8 @@ class BarangController {
             merk : data.merk,
             hargaBeli : data.hargaBeli,
             hargaJual : data.hargaJual,
-            fotoBarang : data.fotoBarang,
+            fotoBarang : req.body.foto,
+            handleBy,
             
         }).then((r)=>{
             res.status(200).json({

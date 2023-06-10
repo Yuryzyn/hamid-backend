@@ -22,28 +22,34 @@ class PenjualanController {
             alamatKirim : data.alamatKirim,
             hargaTotal : data.hargaTotal,
             tglKirim : data.tglKirim,
+            handleBy : data.handleBy
         }).then((response)=>{
+            const barangId = response.idBarang
+            const jumlah = response.jumlahBeli
             if(response.hargaTotal === 0){
-                let calculateTotal = response.map((newData)=>{
-                    return barang.findById({
-                        _id : newData.idBarang
-                    }).then((barang)=>{
-                        const totalHarga = barang.hargaJual * newData.jumlahBeli;
-                        return jual.updateOne({noNota : newData.noNota},{hargaTotal : totalHarga})
+                return barang.findById({
+                    _id : barangId
+                }).then((tool)=>{
+                    const harga = tool.hargaJual;
+                    return jual.findByIdAndUpdate({
+                        _id : response._id
+                    },{
+                        $inc : {
+                            hargaTotal : harga * jumlah
+                        }
                     })
                 })
-                return Promise.all(calculateTotal);
             }
         }).then((r)=>{
             res.status(200).json({
-                message: "Berhasil mengirim data pembeli"
+                message: "Berhasil mengirim data penjualan"
             })
         }).catch(next)
     }
 
     static allPenjualan(req, res, next){
         
-        stock.find({
+        jual.find({
         }).then((response)=>{
             let final = response.map((data)=>{
                 return barang.findById({_id : data.idBarang}).then((resBarang)=>{
@@ -62,7 +68,6 @@ class PenjualanController {
                                 jumlahBeli : data.jumlahBeli,
                                 alamatKirim : data.alamatKirim,
                                 hargaTotal : data.hargaTotal,
-                                tglKirim : data.tglKirim,
                                 statusKirim : data.statusKirim,
                                 handleBy : data.handleBy,
                             }
@@ -71,12 +76,13 @@ class PenjualanController {
                 })
             })
             return Promise.all(final);
-        }).then((finalData)=>{
+        }).then((finalResult)=>{
             res.status(200).json({
-                data : finalData,
+                data : finalResult,
                 message: "Berhasil memuat semua data penjualan"
             })
-        })
+        }).catch(next)
+
     }
 
     static checkPengiriman(req, res, next){
@@ -87,19 +93,42 @@ class PenjualanController {
         },{
             nomorSuratJalan : data.nomorSuratJalan
         }).then((response)=>{
-            if(response.nomorSuratJalan === "belum ada surat jalan"){
+            if(!data.nomorSuratJalan) {
                 throw{
                     status : 403,
                     message : "Nomor surat jalan harus di isi!"
                 }
+            } else if(response.statusKirim === "canceled") {
+                throw{
+                    status : 403,
+                    message : "Pesanan ini sudah di cancel!"
+                }
+            } else if(response.statusKirim === "finished") {
+                throw{
+                    status : 403,
+                    message : "Pesanan ini sudah selesai!"
+                }
+            } else if(response.statusKirim === "deliver") {
+                throw{
+                    status : 403,
+                    message : "Pesanan ini sudah dalam pengiriman!"
+                }
+            } else if(!response.statusKirim) {
+                throw{
+                    status : 400,
+                    message : "Error, data tidak ditemukan!"
+                }
             } else {
-                jual.updateOne({
-                    _id : data._id
-                },{statusKirim : "deliver"})
+                return jual.findByIdAndUpdate({
+                    _id : response._id
+                },{
+                    tglKirim : Date.now(),
+                    statusKirim : "deliver"
+                })
             }
         }).then((r)=>{
-            res.satus(200).json({
-                message : "Berhasil checkmark barang yang masuk!"
+            res.status(200).json({
+                message: "Berhasil mengupdate status penjualan dengan nomor surat jalan : " + data.nomorSuratJalan
             })
         }).catch(next)
 
@@ -121,14 +150,24 @@ class PenjualanController {
                     status : 403,
                     message : "Pesanan ini sudah di kirim dan sudah selesai!"
                 }
+            } else if (response.statusKirim === "canceled" ) {
+                throw {
+                    status : 403,
+                    message : "Pesanan ini sudah di cancel!"
+                }
+            } else if(!response.statusKirim) {
+                throw{
+                    status : 400,
+                    message : "Error, data tidak ditemukan!"
+                }
             } else {
-                jual.updateOne({
+                return jual.findByIdAndUpdate({
                     _id : data._id
                 },{statusKirim : "canceled"})
             }
         }).then((r)=>{
-            res.satus(200).json({
-                message : "Berhasil checkmark barang yang masuk!"
+            res.status(200).json({
+                message : "Berhasil cancel pesanan ini!"
             })
         }).catch(next)
 
@@ -145,25 +184,46 @@ class PenjualanController {
                     status : 403,
                     message : "Pesanan ini masih di proses!"
                 }
-            } else if (response.statusKirim === "cancel" ) {
+            } else if(response.statusKirim === "cancel" ) {
                 throw {
                     status : 403,
                     message : "Pesanan ini telah di cancel!"
                 }
+            } else if(response.statusKirim === "finished") {
+                throw{
+                    status : 403,
+                    message : "Pesanan ini sudah selesai!"
+                }
+            } else if(!response.statusKirim) {
+                throw{
+                    status : 400,
+                    message : "Error, data tidak ditemukan!"
+                }
             } else {
-                jual.updateOne({
+                return jual.findByIdAndUpdate({
                     _id : data._id
-                },{statusKirim : "finished"})
+                },{tanggalTerima : Date.now(), statusKirim : "finished"})
             }
         }).then((response2)=>{
-            let reduceStock = response2.map((newData)=>{
-                return gudang.updateOne({idBarang : newData.idBarang},{
-                    $inc:{jumlahBarang: -newData.jumlahBeli}
+            const barangId = response2.idBarang
+            const totalTerjual = response2.jumlahBeli
+            console.log(response2)
+            if(!response2){
+                throw{
+                    status : 400,
+                    message : "error, data tidak ada!"
+                }
+            } else {
+                return gudang.updateOne({ 
+                    idBarang : barangId
+                },{
+                    $inc : {
+                        jumlahBarang : - totalTerjual
+                    }
                 })
-            })
-            return Promise.all(reduceStock);
+            }
         }).then((r)=>{
-            res.satus(200).json({
+            res.status(200).json({
                 message : "Berhasil checkmark barang yang masuk!"
             })
         }).catch(next)

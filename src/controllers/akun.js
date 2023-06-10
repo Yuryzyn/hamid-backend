@@ -29,7 +29,7 @@ class Controller{
 
         akun.find ({}).then((response)=>{
             res.status(200).json({
-                response,
+                data : response,
                 message : "Berhasil memuat database karyawan"
             })
 
@@ -84,7 +84,7 @@ class Controller{
         akun.findOne({ username })
           .then(async (response) => {
             if (!response) {
-                throw { status: 400, message: "Maaf akun anda tidak terdaftar!" };
+                throw { status: 400, message: "Username salah atau Akun anda tidak terdaftar!" };
             } else {
                 if (response.status === "aktif") {
                     if (response && checkPass(password, response.password)) {
@@ -106,7 +106,7 @@ class Controller{
                         console.log(err);
                         }
                 } else {
-                  throw { status: 400, message: "Email atau Password anda salah!" };
+                  throw { status: 400, message: "Password anda salah!" };
                 }
               } else {
                 throw { status: 400, message: "Maaf status anda tidak aktif!" };
@@ -132,8 +132,8 @@ class Controller{
         let {idKaryawan,username,password} = req.body
         let newPass = hashPass(password);
 
-        akun.findOneAndUpdate({
-            idKaryawan
+        akun.findByIdAndUpdate({
+            _id : idKaryawan
         },{
             username,
             password: newPass,
@@ -174,7 +174,7 @@ class Controller{
         
         if (role < 3 && status == "nonaktif") {
             throw {
-                message: "status tidak dapat di rubah!",
+                message: "status tidak dapat di rubah, akun ini adalah administrator!",
             };
         } else {
             akun.findOneAndUpdate(

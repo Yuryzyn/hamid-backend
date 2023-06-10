@@ -3,14 +3,11 @@ var mongoose = require("mongoose");
 
  dotenv.config({path: "./src/.env"});
 
- const password = process.env.DB_PASSWORD;
- const username = process.env.DB_USERNAME;
- const cluster  = process.env.DB_CLUSTER;
- const code  = process.env.DB_CODE;
+ const database = process.env.DATABASE;
  const folder = process.env.DB_FOLDER;
 
 const dbConnect = () => {
-  const mongoURI= `mongodb+srv://${username}:${password}@${cluster}.${code}.mongodb.net/${folder}`;
+  const mongoURI= database;
 
    mongoose.connect(mongoURI, {
      useNewUrlParser: true,

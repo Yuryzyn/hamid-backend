@@ -1,6 +1,8 @@
 const Router = require("express").Router();
 const { upload } = require("../middlewares/photo");
-// Router.use(jwtAuthenticate);
+const { jwtAuthenticate } = require("../middlewares/auth");
+
+Router.use(jwtAuthenticate);
 
 const gudang = require("./../controllers/gudang");
 Router.post("/add-stock", gudang.addStockGudang);
@@ -8,9 +10,9 @@ Router.get("/all-stock", gudang.findAllStockGudang);
 Router.post("/edit-stock", gudang.editStockGudang);
 
 const retur = require("./../controllers/barangRusak");
-Router.post("/add-retur", retur.addBarangRusak);
-Router.get("/all-retur", retur.findAllBarangRusak);
-Router.post("/edit-retur", retur.editBarangRusak);
+Router.post("/add-retur", retur.addBarangRetur);
+Router.get("/all-retur", retur.findAllBarangRetur);
+Router.post("/edit-retur", retur.editBarangRetur);
 Router.post("/done-retur", retur.checkRetur);
 
 const barang = require("./../controllers/barang");

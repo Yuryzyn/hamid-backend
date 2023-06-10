@@ -7,7 +7,7 @@ const stock = require("../models/gudang");
 
 class BarangRusakController {
 
-    static addBarangRusak(req, res, next){
+    static addBarangRetur(req, res, next){
         let {idBarang, keteranganRusak,jumlahRusak,handleBy} = req.body
         
         stock.findOne({
@@ -46,7 +46,7 @@ class BarangRusakController {
 
     }
 
-    static findAllBarangRusak(req, res, next){
+    static findAllBarangRetur(req, res, next){
 
         retur.find ({}).then((response)=>{
             res.status(200).json({
@@ -57,14 +57,14 @@ class BarangRusakController {
         .catch(next)
     }
 
-    static editBarangRusak (req, res, next){
+    static editBarangRetur(req, res, next){
         let data = req.body
 
         retur.findOneAndUpdate({
             _id : data._id
         },{
             keteranganRusak : data.keteranganRusak,
-            jumlahRusak : data.jumlahRusak,
+            // jumlahRusak : data.jumlahRusak, update jumlah data ndak tau gan..
             handleBy : data.handleBy,
             
         }).then((r)=>{
@@ -75,7 +75,7 @@ class BarangRusakController {
 
     }
 
-    static checkRetur (req, res, next){
+    static checkRetur(req, res, next){
         let data = req.body
 
         retur.findById({
