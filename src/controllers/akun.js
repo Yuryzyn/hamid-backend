@@ -61,12 +61,18 @@ class Controller{
         let newPass = hashPass(password);
 
         akun.findById({_id}).then( async (response)=>{
-            if(response.status == "nonaktif"){
+            if (response.status == "nonaktif"){
                 throw{
                     status: 403,
                     message: "Tidak dapat mendaftarkan akun karna status " + response.nama +" adalah nonaktif!" 
                  }
-            } else {
+            } else if (response.username == true){
+                throw{
+                    status: 403,
+                    message: "Tidak dapat mendaftarkan akun karna " + response.nama +" sudah memiliki akun!" 
+                 }
+            }
+             else {
                 return akun.findByIdAndUpdate({
                     _id
                 },{
