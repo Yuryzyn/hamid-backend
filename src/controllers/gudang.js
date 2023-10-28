@@ -18,7 +18,6 @@ class GudangController {
                 return gudang.create({
                     idBarang : data.idBarang,
                     jumlahBarang : data.jumlahBarang,
-                    handleBy : data.handleBy,
                 })
             } else {
                 return gudang.updateOne({idBarang : data.idBarang},{

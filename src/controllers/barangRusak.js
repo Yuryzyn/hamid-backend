@@ -22,7 +22,6 @@ class BarangRusakController {
                     idBarang,
                     keteranganRusak,
                     jumlahRusak,
-                    handleBy,
                 })
             }
         }).then((response)=>{
@@ -34,7 +33,6 @@ class BarangRusakController {
                         jumlahBarang : -data.jumlahRusak,
                         jumlahRusak : +data.jumlahRusak,
                     },
-                    handleBy,
                 })
             })
             return Promise.all(nextStep);

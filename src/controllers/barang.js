@@ -19,7 +19,6 @@ class BarangController {
                     hargaBeli,
                     hargaJual,
                     fotoBarang : req.body.foto,
-                    handleBy,
                 }).then((r)=>{
                     res.status(200).json({
                         message: "Berhasil mengirim data barang",
@@ -44,18 +43,16 @@ class BarangController {
     }
 
     static editBarang (req, res, next){
-        let data = req.body
+        let {_id, jenis, merk, hargaBeli, hargaJual, handleBy}= req.body
 
         barang.findOneAndUpdate({
-            _id : data._id
+            _id : _id
         },{
-            jenis : data.jenis,
-            merk : data.merk,
-            hargaBeli : data.hargaBeli,
-            hargaJual : data.hargaJual,
+            jenis,
+            merk,
+            hargaBeli,
+            hargaJual,
             fotoBarang : req.body.foto,
-            handleBy,
-            
         }).then((r)=>{
             res.status(200).json({
                 message: "Berhasil edit data barang"
@@ -63,6 +60,8 @@ class BarangController {
         }).catch(next)
 
     }
+
+    
 }
 
 module.exports = BarangController;

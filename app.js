@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const router = require("./src/routers/index");
 const helmet = require("helmet");
+const path = require('path');
 
 const app = express();
 const server = require("http").Server(app);
@@ -17,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.hidePoweredBy({ setTo: "PHP 7.4.11" }));
+
+app.use("/fotoBarang", express.static(path.join(__dirname,'./fotoBarang')));
 
 app.use("/", router);
 
